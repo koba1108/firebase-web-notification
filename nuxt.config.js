@@ -1,5 +1,6 @@
 import VuetifyLoaderPlugin from 'vuetify-loader/lib/plugin'
 import pkg from './package'
+import firebaseModule from './modules/firebase-module'
 
 export default {
   mode: 'spa',
@@ -12,16 +13,16 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      { hid: 'description', name: 'description', content: pkg.description },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
-      }
-    ]
+          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons',
+      },
+    ],
   },
 
   /*
@@ -33,14 +34,14 @@ export default {
   ** Global CSS
   */
   css: [
-    '~/assets/style/app.styl'
+    '~/assets/style/app.styl',
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/vuetify'
+    '@/plugins/vuetify',
   ],
 
   /*
@@ -48,6 +49,11 @@ export default {
   */
   modules: [
     '@nuxtjs/pwa',
+    [
+      '@nuxtjs/firebase', {
+      config: firebaseModule.config,
+      services: firebaseModule.services,
+    }],
   ],
 
   /*
@@ -58,13 +64,21 @@ export default {
     plugins: [new VuetifyLoaderPlugin()],
     loaders: {
       stylus: {
-        import: ['~assets/style/variables.styl']
-      }
+        import: ['~assets/style/variables.styl'],
+      },
     },
-    /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
+    extend(config, ctx) {},
+  },
+
+  /*
+  ** PWA configuration
+  */
+  pwa: {
+    workbox: {
+      importScripts: [
+        'firebase-auth-sw.js'
+      ],
+      dev: true
     }
-  }
+  },
 }
